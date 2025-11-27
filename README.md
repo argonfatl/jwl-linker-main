@@ -1,6 +1,17 @@
-# JWL Linker Plugin for [Obsidian](https://obsidian.md)
+# JWL Linker EN-RU Plugin for [Obsidian](https://obsidian.md)
 
-Display all scripture references as *JW Library* links In Reading View. Adds commands to convert scriptures references and JW.Org links to *JW Library* links. Adds commands to fetch verse, paragraph, and publication citations.
+**Comprehensive multilingual JW Library linker** supporting Bible references and JW publications in **English and Russian**. Features automatic language detection, multi-format publication support, and intelligent content extraction from WOL.
+
+## ✨ Key Features
+
+- 📖 **Bible References**: Automatic conversion to JW Library links with verse text extraction
+- 📚 **Publication Support**: Watchtower, Awake!, books (od, it-1, cl, si, etc.) in multiple formats
+- 🌍 **Multilingual**: Full English and Russian support with auto-detection
+- 🔄 **Auto-formatting**: `od 15 par. 3` → `od chap. 15 par. 3` (English/Russian)
+- 📅 **Year Filtering**: Watchtower availability (Russian: 1986+, English: 1950+)
+- 🎯 **Dual Mode**: Show publications in both languages simultaneously
+- 💬 **Smart Citations**: Extract paragraph text with callout formatting
+- 📝 **Text Quoting**: Convert selected text to citation callouts
 
 # How to Install
 
@@ -10,19 +21,36 @@ Restart Obsidian and go to the *Community Plugins Settings* page to enable the p
 
 *Note: you can also click the `<>Code` button above and choose `Download.zip`*
 
-# How to Use In Reading View
+# 📖 Supported Publication Formats
 
-Displays all valid scripture references as *JW Library* links.
-Open any page that contains scripture references, e.g. `Rom 1:20; Psalm 89:18; 1 Cor 9:26, etc...` and then simply switch to *Reading View.*  
+## Bible References
+- **English**: `Rom 1:20`, `1 Cor 9:26`, `Psalm 89:18`
+- **Russian**: `Рим 1:20`, `1 Кор 9:26`, `Псалом 89:18`
 
-You should see that all scripture references are now displayed as functioning hyperlinks; in addition any abbreviated bible book names will be written out in full.  Invalid scripture references will be ignored.
+## Watchtower Publications
+- **English**: `w65 6/1 p. 329 par. 6`, `w24 1/15 p. 12 par. 3`
+- **Russian**: `w86.01 28, абз. 11`, `w24.12 15, абз. 5`
+
+## Other Publications
+- **Books**: `od 15 par. 3`, `it-1 332`, `cl chap. 8 p. 77 par. 2`
+- **Russian**: `od 15 абз. 3`, `cl глава 8 с. 77 абз. 2`
+- **Page Ranges**: `si pp. 300-301 par. 11`, `si сс. 300-301 абз. 11`
+
+## Auto-formatting Examples
+- `od 15 par. 3` → `od chap. 15 par. 3`
+- `od 15 абз. 3` → `od глава 15 абз. 3`
+- `cl 8 par. 2` → `cl chap. 8 par. 2`
+
+# 🎯 How to Use In Reading View
+
+Displays all valid scripture references as *JW Library* links with automatic language detection.
+Open any page with scripture references and switch to *Reading View* to see hyperlinks with full book names.
 
 > Note: This only affects the *Reading View*, it does not modify the underlying Markdown text.
 
+# ⚡ How to Use In Editing View
 
-# How to Use In Editing View
-
-The plugin provides many new commands to work with scriptures, publication references and JW.Org links.
+The plugin provides comprehensive commands for scriptures, publications, and citations.
 
 To access the commands:
 - On Desktop: right-click next to the scripture, and hover on *JWL Linker* to see the list of commands.
@@ -30,95 +58,114 @@ To access the commands:
   
 - On Mobile: add a toolbar item for the *JWL Linker* command.
 
-| Command                               | Mode | Target                          | Result                                                                                  | Replace target | 
-| -------------------------------------| ---- | ------------------------------ | ------------------------------------------------------------------------------------ | ------------- |
-| Cite verses                           | Edit | Scripture reference             | `[[ JW Library url \| scripture reference ]] < Verses in plain format >`                | Adds below     | 
-| Cite verses as callout                | Edit | Scripture reference             | `[[ JW Library url \| scripture reference ]]<br/>< Verses in callout format >`          | Adds below     | 
-| Cite jw.org url                       | Edit | wol.jw.org \| jw.org/finder url | `[[ original url \| article nav title ]]<br/>< Full citation in plain format >`         | Adds below     | 
-| Cite jw.org url as callout            | Edit | wol.jw.org \| jw.org/finder url | `[[ original url \| article nav title ]]<br/>< Full citation in callout format >`       | Adds below     | 
-| Cite publication lookup               | Edit | Publication reference           | `[[ JW Library url \| publication reference ]]<br/>< Full citation of lookup article >` | Adds below     | 
-| Lookup selected text on WOL           | Edit | All text \| pub. reference       | `Open WOL lookup using selected as search text`                                         | Opens          | 
-| Add title to jw.org url               | Edit | wol.jw.org \| jw.org/finder url | `[[ original url \| article nav title ]]`                                               | Replaces       | 
-| Convert scriptures to JW Library      | Edit | Scripture reference             | `[[ JW Library url \| scripture reference ]]`                                           | Replaces       | 
-| Convert jw.org url to JW Library      | Edit | wol.jw.org \| jw.org/finder url | `JW Library url<br/>(Converts just the url portion)`                                    | Replaces       | 
-| Open scripture at caret in JW Library | Edit | Scripture reference             | `Open JW Library at the scripture`                                                      | Opens          | 
-| (Link scriptures as JW Library)       | HTML | Scripture reference             | `<a href …> scripture reference </a>`                                                   | Replaces       | 
+## 📋 Available Commands
+
+| Command                               | Target                          | Result                                                                                  | Action         | 
+| -------------------------------------| ------------------------------ | ------------------------------------------------------------------------------------ | ------------- |
+| **Cite verses**                      | Scripture reference             | Verse text with JW Library link in plain format                                     | Adds below     | 
+| **Cite verses as callout**           | Scripture reference             | Verse text with JW Library link in callout format                                   | Adds below     | 
+| **Cite jw.org url**                  | WOL/JW.org URL                  | Article content with navigation title in plain format                               | Adds below     | 
+| **Cite jw.org url as callout**       | WOL/JW.org URL                  | Article content with navigation title in callout format                             | Adds below     | 
+| **Cite publication lookup**          | Publication reference           | Publication content with auto-formatting and language detection                     | Adds below     | 
+| **Lookup selected text on WOL**      | Any text                        | Opens WOL search with selected text                                                  | Opens browser  | 
+| **Cite selected text**               | Selected text                   | Wraps text in `[!cite]` callout format                                              | Replaces       |
+| **Add title to jw.org url**          | WOL/JW.org URL                  | Adds proper navigation title to existing URL                                         | Replaces       | 
+| **Convert scriptures to JW Library** | Scripture reference             | Converts to JW Library markdown link                                                 | Replaces       | 
+| **Convert jw.org url to JW Library** | WOL/JW.org URL                  | Converts to JW Library URL                                                           | Replaces       | 
+| **Open scripture in JW Library**     | Scripture reference             | Opens scripture directly in JW Library app                                           | Opens app      | 
 
 
 
-# Details on the usage
+# 🌍 Multilingual Support
 
-### Cite verses
+## Language Detection
+- **Automatic**: Detects Cyrillic characters for Russian, defaults to English
+- **Manual**: Set preferred language in plugin settings
+- **Dual Mode**: Show publications in both English and Russian simultaneously
 
-This command fetches bible verse content online and inserts (or cites) the text directly into the page markdown content with plain formatting.  Any range of verses with in a single chapter is accepted, e.g. `Ac 12:1-4.`
-Click anywhere in the scripture reference, then click the run the command.  The plugin will show a popup notice while it is fetching the citation, and then insert it together with the scripture.
+## Publication Availability
+- **Russian Watchtower**: Available from 1986 onwards (`w86.01` and later)
+- **English Watchtower**: Available from 1950 onwards (`w50 1/1` and later)
+- **Offline Publications**: Automatic detection with localized messages
 
-## Cite verses as callout
+## Language-Specific Features
+- **Auto-formatting**: Converts `par.` ↔ `абз.`, `chap.` ↔ `глава`, `p.` ↔ `с.`
+- **Publication Titles**: Displays in appropriate language (e.g., "Сторожевая башня" vs "The Watchtower")
+- **Interface**: Menu items and messages in selected interface language
 
-As above but uses callout formatting.
+# 📝 Example Outputs
 
-----
+## Bible Citation (English)
+```markdown
+Rom 1:20
+> [!verse] BIBLE — [Romans 1:20](jwlibrary://...)
+> **20** For his invisible qualities are clearly seen from the world's creation onward...
+```
 
-## Cite jw.org url as callout 
+## Publication Citation (Russian)
+```markdown
+w86.01 28, абз. 11
+> [!cite] ПУБЛ. — [Сторожевая башня 1986 Январь с. 28 абз. 11](https://wol.jw.org/...)
+> **11** Большинство людей сегодня не признают принцип главенства...
+```
 
-This command fetches the paragraph content from an existing jw.org link and inserts it with plain formatting, together with the correct navigation title.
+## Dual Mode Output
+```markdown
+od 15 par. 3
+**English:**
+> [!cite] PUB. — [Organized to Do Jehovah's Will chap. 15 par. 3](https://wol.jw.org/...)
+> **3** Most people today do not recognize the principle of headship...
 
-Note: to create this kind of link in wol.jw.org first click on a paragraph (you will see faint underlining), then copy the page link.
+**Russian:**
+> [!cite] ПУБЛ. — [Организованы исполнять волю Иеговы глава 15 абз. 3](https://wol.jw.org/...)
+> **3** Большинство людей сегодня не признают принцип главенства...
+```
 
-## Cite jw.org url as callout
+## Text Citation
+```markdown
+Selected text: "This is important information"
+> [!cite] ЦИТАТА
+> This is important information
+```
 
-As above, but uses callout formatting.
+# ⚙️ Plugin Settings
 
-----
+## Display Options
+- **Verse Template**: Customize format for Bible verse citations
+- **Callout Templates**: Customize format for callout-style citations  
+- **Language Settings**: Interface language (Russian/English) and citation language
+- **Dual Mode**: Enable simultaneous English/Russian publication display
 
-## Cite publication lookup
+## Advanced Options
+- **History Size**: Number of recent citations to keep in sidebar
+- **Bold Numbers**: Apply bold formatting to verse/paragraph numbers
+- **Citation Links**: Enable JW Library links for scripture references
+- **Paragraph Count**: Default number of paragraphs to cite
 
-This command fetches the result of a standard WT publication reference, and inserts the resulting article below the original reference on the page.
-Select the publication reference including the pages and run the command.
+# 🔗 Opening Links
 
-## Lookup selected text on WOL
+Click any generated link to open directly in your installed *JW Library* app at the exact scripture or publication reference.
 
-Open WOL website and search based on the selected text. Works well for publication references also.
+# 💡 Tips for Usage
 
-----
+## Command Access Methods
+1. **Right-click Menu**: Right-click in editor → hover "JWL Linker" → select command
+2. **Command Palette**: `Ctrl/Cmd + P` → type "jw..." → select command
+3. **Commander Plugin**: Add commands to toolbar for quick access
+4. **Pinned Commands**: Pin frequently used commands in Command Palette
 
-## Add title to jw.org url 
+## Best Practices
+- **Select text** before running commands for best results
+- **Use dual mode** when working with multilingual content
+- **Check publication years** - older Watchtowers may not be available online
+- **Verify auto-formatting** - plugin automatically adds "chap." and "глава" where appropriate
 
-Adds the correct navigation title to an existing wol.jw.org link.
+## Supported Publication Codes
+- **Books**: `od`, `it-1`, `it-2`, `si`, `cl`, `jv`, `dp`, `ip-1`, `ip-2`, `be`, `th`
+- **Periodicals**: `w` (Watchtower), `g` (Awake!), `km`, `mwb`
+- **Study Aids**: `lff`, `rr`, `rs`
 
-## Convert scripture to JW Library 
+---
 
-This command converts Bible scripture references to *JW Library* links.
-Click anywhere in a line or select text that contains scripture references then click the command and the scriptures should be converted to a local JW Library links.
-
-> Note: Unlike the 'Reading View' option above this command permanently rewrites scripture references as a markdown style link in the Markdown text.  The Reading View option is non-destructive.
-
-## Convert jw.org url to JW Library
-
-Converts existing wol.jw.org and jw.org Finder style links [^1] into local JW Library links.
-
-## Open scripture at caret in JW Library
-
-Open the scripture under the caret in the local JW Library app.
-
-----
-
-# Opening links
-
-Click on a newly created link to open it directly in your installed *JW Library* app at that scripture or publication reference.
-
-
-# Plugin Settings
-
-The various templates and other parameters can be changed in the plugin settings.
-
-
-# Tips for using Commands
-
-You can also:
-  1. Use a plugin like *Commander* to add a new command wherever you prefer
-  2. Use the *Command palette* `Ctrl + P` to call up the commands as needed; just start typing "jw..." and they should be listed  
-  3. You can also used *Pinned commands* in the *Command Palette* to keep them available at the top (works well on mobile)
-
-[^1]: The type of link you get when you click on the 'Share Link' option on JW.Org, WOL.Org, or in the *JW Library* App.
+**Version**: 0.5.1 | **Languages**: English, Russian | **Platform**: Obsidian Desktop & Mobile
 
