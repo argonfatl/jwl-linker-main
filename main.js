@@ -373,8 +373,12 @@ const Config = {
   englishPubRegex: /w(\d{2})\s+(\d{1,2}\/\d{1,2})\s+(?:p\.\s*)?(\d+)\s+par\.\s*(\d+)/g,
   // English publication with month names regex (w25 March p. 8 par. 2)
   englishPubMonthRegex: /w(\d{2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+p\.\s*(\d+)\s+par\.\s*(\d+)/gi,
+  // English publication with day and month names regex (w10 15 January p. 3 par. 1)
+  englishPubDayMonthRegex: /w(\d{2})\s+(1|15)\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+p\.\s*(\d+)\s+par\.\s*(\d+)/gi,
   // Spanish publication with month names regex (w25 Marzo pág. 8 párr. 2)
   spanishPubMonthRegex: /w(\d{2})\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+pág\.\s*(\d+)\s+párr\.\s*(\d+)/gi,
+  // Spanish publication with day and month names regex (w10 15 Enero pág. 3 párr. 1)
+  spanishPubDayMonthRegex: /w(\d{2})\s+(1|15)\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+pág\.\s*(\d+)\s+párr\.\s*(\d+)/gi,
   // Other JW publications regex (od, it-1, it-2, si, etc.)
   // Formats: od 15 par. 3, od 15 абз. 3, od 15 párr. 3, it-1 332, cl chap. 8 p. 77 par. 2, od глава 15 абз. 3, od cap. 15 párr. 3, si pp. 300-301 par. 11, si págs. 300-301 párr. 11
   otherPubRegex: /([a-z]{1,3}(?:-\d)?)\s+(?:(?:chap\.|глава|cap\.)\s*)?(\d+(?:\/\d+)?)\s*(?:(?:pp?\.|сс?\.|págs?\.)\s*(\d+(?:-\d+)?)\s+)?(?:(?:par\.|абз\.|párr\.)\s*(\d+))?/g,
@@ -588,12 +592,42 @@ function autoFormatRussianWatchtower(input) {
  * @returns {string} - Formatted text or original if no match
  */
 function autoFormatEnglishWatchtower(input) {
+  // First check for day + month format (w10 15 January p. 3 par. 1)
+  const dayMonthRegex = Config.englishPubDayMonthRegex;
+  dayMonthRegex.lastIndex = 0;
+  const dayMonthMatch = dayMonthRegex.exec(input);
+
+  if (dayMonthMatch) {
+    const [fullMatch, year, day, monthName, page, paragraph] = dayMonthMatch;
+    const monthNumber = EnglishMonths[monthName.toLowerCase()];
+
+    if (monthNumber) {
+      const publicationYear = parseInt(year) < 50 ? 2000 + parseInt(year) : 1900 + parseInt(year);
+
+      if (publicationYear < 2016) {
+        // Pre-2016: Use month/day format (w10 1/15 p. 3 par. 1)
+        const formatted = `w${year} ${monthNumber}/${day} p. ${page} par. ${paragraph}`;
+        console.log('Auto-formatted English Watchtower (pre-2016):', input, '→', formatted);
+        return input.replace(fullMatch, formatted);
+      } else {
+        // Post-2016: Use month/day format but with current logic
+        const defaultDay = monthNumber === '01' || monthNumber === '03' || monthNumber === '05' ||
+          monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
+          monthNumber === '12' ? '1' : '15';
+        const formatted = `w${year} ${monthNumber}/${defaultDay} p. ${page} par. ${paragraph}`;
+        console.log('Auto-formatted English Watchtower (post-2016):', input, '→', formatted);
+        return input.replace(fullMatch, formatted);
+      }
+    }
+  }
+
+  // Then check for month-only format (w25 March p. 8 par. 2)
   const monthRegex = Config.englishPubMonthRegex;
   monthRegex.lastIndex = 0;
-  const match = monthRegex.exec(input);
+  const monthMatch = monthRegex.exec(input);
 
-  if (match) {
-    const [fullMatch, year, monthName, page, paragraph] = match;
+  if (monthMatch) {
+    const [fullMatch, year, monthName, page, paragraph] = monthMatch;
     const monthNumber = EnglishMonths[monthName.toLowerCase()];
 
     if (monthNumber) {
@@ -601,7 +635,7 @@ function autoFormatEnglishWatchtower(input) {
         monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
         monthNumber === '12' ? '1' : '15'; // Simplified: 1st for odd months, 15th for even
       const formatted = `w${year} ${monthNumber}/${day} p. ${page} par. ${paragraph}`;
-      console.log('Auto-formatted English Watchtower:', input, '→', formatted);
+      console.log('Auto-formatted English Watchtower (month-only):', input, '→', formatted);
       return input.replace(fullMatch, formatted);
     }
   }
@@ -615,12 +649,42 @@ function autoFormatEnglishWatchtower(input) {
  * @returns {string} - Formatted text or original if no match
  */
 function autoFormatSpanishWatchtower(input) {
+  // First check for day + month format (w10 15 Enero pág. 3 párr. 1)
+  const dayMonthRegex = Config.spanishPubDayMonthRegex;
+  dayMonthRegex.lastIndex = 0;
+  const dayMonthMatch = dayMonthRegex.exec(input);
+
+  if (dayMonthMatch) {
+    const [fullMatch, year, day, monthName, page, paragraph] = dayMonthMatch;
+    const monthNumber = SpanishMonths[monthName.toLowerCase()];
+
+    if (monthNumber) {
+      const publicationYear = parseInt(year) < 50 ? 2000 + parseInt(year) : 1900 + parseInt(year);
+
+      if (publicationYear < 2016) {
+        // Pre-2016: Use month/day format (w10 1/15 pág. 3 párr. 1)
+        const formatted = `w${year} ${monthNumber}/${day} pág. ${page} párr. ${paragraph}`;
+        console.log('Auto-formatted Spanish Watchtower (pre-2016):', input, '→', formatted);
+        return input.replace(fullMatch, formatted);
+      } else {
+        // Post-2016: Use month/day format but with current logic
+        const defaultDay = monthNumber === '01' || monthNumber === '03' || monthNumber === '05' ||
+          monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
+          monthNumber === '12' ? '1' : '15';
+        const formatted = `w${year} ${monthNumber}/${defaultDay} pág. ${page} párr. ${paragraph}`;
+        console.log('Auto-formatted Spanish Watchtower (post-2016):', input, '→', formatted);
+        return input.replace(fullMatch, formatted);
+      }
+    }
+  }
+
+  // Then check for month-only format (w25 Marzo pág. 8 párr. 2)
   const monthRegex = Config.spanishPubMonthRegex;
   monthRegex.lastIndex = 0;
-  const match = monthRegex.exec(input);
+  const monthMatch = monthRegex.exec(input);
 
-  if (match) {
-    const [fullMatch, year, monthName, page, paragraph] = match;
+  if (monthMatch) {
+    const [fullMatch, year, monthName, page, paragraph] = monthMatch;
     const monthNumber = SpanishMonths[monthName.toLowerCase()];
 
     if (monthNumber) {
@@ -628,7 +692,7 @@ function autoFormatSpanishWatchtower(input) {
         monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
         monthNumber === '12' ? '1' : '15'; // Simplified: 1st for odd months, 15th for even
       const formatted = `w${year} ${monthNumber}/${day} pág. ${page} párr. ${paragraph}`;
-      console.log('Auto-formatted Spanish Watchtower:', input, '→', formatted);
+      console.log('Auto-formatted Spanish Watchtower (month-only):', input, '→', formatted);
       return input.replace(fullMatch, formatted);
     }
   }
