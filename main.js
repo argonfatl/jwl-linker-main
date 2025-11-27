@@ -13,9 +13,9 @@ const {
 
 const DEFAULT_SETTINGS = {
   verseTemplate: '{title}\u2002“*{text}*”', // non-breaking space
-  verseCalloutTemplate: '> [!verse] БИБЛИЯ — {title}\n> {text}\n',
+  verseCalloutTemplate: '> [!verse] BIBLE — {title}\n> {text}\n',
   pubTemplate: '{title}\n“*{text}*”',
-  pubCalloutTemplate: '> [!cite] ПУБЛ. — {title}\n> {text}\n',
+  pubCalloutTemplate: '> [!cite] PUB. — {title}\n> {text}\n',
   historySize: 20,
   boldInitialNum: true,
   citationLink: true,
@@ -1301,6 +1301,23 @@ class JWLLinkerPlugin extends Plugin {
               template = this.settings.verseTemplate;
             } else if (command === Cmd.citeVerseCallout) {
               template = this.settings.verseCalloutTemplate;
+
+              // Make Bible callout header dynamic based on detected language
+              let lang = this.settings?.lang || 'Auto';
+              if (lang === 'Auto') {
+                lang = detectLanguage(input);
+              } else {
+                lang = Languages[lang] || 'EN';
+              }
+
+              // Replace the Bible header based on detected language
+              if (lang === 'RU') {
+                template = template.replace(/BIBLE|BIBLIA/g, 'БИБЛИЯ');
+              } else if (lang === 'ES') {
+                template = template.replace(/BIBLE|БИБЛИЯ/g, 'BIBLIA');
+              } else {
+                template = template.replace(/БИБЛИЯ|BIBLIA/g, 'BIBLE');
+              }
             }
             const citation = template.replace('{title}', title).replace('{text}', text);
             output.push(citation);
