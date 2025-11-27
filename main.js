@@ -364,9 +364,15 @@ const Config = {
   // Russian publication reference regex (only Russian format with абз.)
   // Russian: w25.01 28, абз. 11
   russianPubRegex: /w(\d{2})\.(\d{1,2})\s+(\d+),?\s*абз\.\s*(\d+)/g,
+  // Russian publication with month names regex (w25 Март с. 8 абз. 2)
+  russianPubMonthRegex: /w(\d{2})\s+(январь|февраль|март|апрель|май|июнь|июль|август|сентябрь|октябрь|ноябрь|декабрь|января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря)\s+с\.\s*(\d+)\s+абз\.\s*(\d+)/gi,
   // English publication reference regex (formats like w65 6/1 p. 329 par. 6)
   // English: w65 6/1 p. 329 par. 6, w24 1/15 p. 12 par. 3
   englishPubRegex: /w(\d{2})\s+(\d{1,2}\/\d{1,2})\s+(?:p\.\s*)?(\d+)\s+par\.\s*(\d+)/g,
+  // English publication with month names regex (w25 March p. 8 par. 2)
+  englishPubMonthRegex: /w(\d{2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+p\.\s*(\d+)\s+par\.\s*(\d+)/gi,
+  // Spanish publication with month names regex (w25 Marzo pág. 8 párr. 2)
+  spanishPubMonthRegex: /w(\d{2})\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)\s+pág\.\s*(\d+)\s+párr\.\s*(\d+)/gi,
   // Other JW publications regex (od, it-1, it-2, si, etc.)
   // Formats: od 15 par. 3, od 15 абз. 3, od 15 párr. 3, it-1 332, cl chap. 8 p. 77 par. 2, od глава 15 абз. 3, od cap. 15 párr. 3, si pp. 300-301 par. 11, si págs. 300-301 párr. 11
   otherPubRegex: /([a-z]{1,3}(?:-\d)?)\s+(?:(?:chap\.|глава|cap\.)\s*)?(\d+(?:\/\d+)?)\s*(?:(?:pp?\.|сс?\.|págs?\.)\s*(\d+(?:-\d+)?)\s+)?(?:(?:par\.|абз\.|párr\.)\s*(\d+))?/g,
@@ -488,6 +494,24 @@ const RussianMonths = {
 };
 
 /**
+ * English month names mapping
+ */
+const EnglishMonths = {
+  'january': '01',
+  'february': '02',
+  'march': '03',
+  'april': '04',
+  'may': '05',
+  'june': '06',
+  'july': '07',
+  'august': '08',
+  'september': '09',
+  'october': '10',
+  'november': '11',
+  'december': '12'
+};
+
+/**
  * Spanish month names mapping
  */
 const SpanishMonths = {
@@ -504,6 +528,84 @@ const SpanishMonths = {
   'noviembre': '11',
   'diciembre': '12'
 };
+
+/**
+ * Auto-format Russian Watchtower publications with month names
+ * @param {string} input - Input text to check and format
+ * @returns {string} - Formatted text or original if no match
+ */
+function autoFormatRussianWatchtower(input) {
+  const monthRegex = Config.russianPubMonthRegex;
+  monthRegex.lastIndex = 0;
+  const match = monthRegex.exec(input);
+
+  if (match) {
+    const [fullMatch, year, monthName, page, paragraph] = match;
+    const monthNumber = RussianMonths[monthName.toLowerCase()];
+
+    if (monthNumber) {
+      const formatted = `w${year}.${monthNumber} ${page}, абз. ${paragraph}`;
+      console.log('Auto-formatted Russian Watchtower:', input, '→', formatted);
+      return input.replace(fullMatch, formatted);
+    }
+  }
+
+  return input;
+}
+
+/**
+ * Auto-format English Watchtower publications with month names
+ * @param {string} input - Input text to check and format
+ * @returns {string} - Formatted text or original if no match
+ */
+function autoFormatEnglishWatchtower(input) {
+  const monthRegex = Config.englishPubMonthRegex;
+  monthRegex.lastIndex = 0;
+  const match = monthRegex.exec(input);
+
+  if (match) {
+    const [fullMatch, year, monthName, page, paragraph] = match;
+    const monthNumber = EnglishMonths[monthName.toLowerCase()];
+
+    if (monthNumber) {
+      const day = monthNumber === '01' || monthNumber === '03' || monthNumber === '05' ||
+        monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
+        monthNumber === '12' ? '1' : '15'; // Simplified: 1st for odd months, 15th for even
+      const formatted = `w${year} ${monthNumber}/${day} p. ${page} par. ${paragraph}`;
+      console.log('Auto-formatted English Watchtower:', input, '→', formatted);
+      return input.replace(fullMatch, formatted);
+    }
+  }
+
+  return input;
+}
+
+/**
+ * Auto-format Spanish Watchtower publications with month names
+ * @param {string} input - Input text to check and format
+ * @returns {string} - Formatted text or original if no match
+ */
+function autoFormatSpanishWatchtower(input) {
+  const monthRegex = Config.spanishPubMonthRegex;
+  monthRegex.lastIndex = 0;
+  const match = monthRegex.exec(input);
+
+  if (match) {
+    const [fullMatch, year, monthName, page, paragraph] = match;
+    const monthNumber = SpanishMonths[monthName.toLowerCase()];
+
+    if (monthNumber) {
+      const day = monthNumber === '01' || monthNumber === '03' || monthNumber === '05' ||
+        monthNumber === '07' || monthNumber === '08' || monthNumber === '10' ||
+        monthNumber === '12' ? '1' : '15'; // Simplified: 1st for odd months, 15th for even
+      const formatted = `w${year} ${monthNumber}/${day} pág. ${page} párr. ${paragraph}`;
+      console.log('Auto-formatted Spanish Watchtower:', input, '→', formatted);
+      return input.replace(fullMatch, formatted);
+    }
+  }
+
+  return input;
+}
 
 /**
  * Update interface language
@@ -711,6 +813,27 @@ class JWLLinkerPlugin extends Plugin {
       console.log('Detected language:', detected);
       return detected;
     };
+    window.testAutoFormatting = (input) => {
+      console.log('=== Testing Auto-formatting ===');
+      console.log('Original:', input);
+      let formatted = autoFormatRussianWatchtower(input);
+      if (formatted !== input) {
+        console.log('Russian formatted:', formatted);
+        return formatted;
+      }
+      formatted = autoFormatEnglishWatchtower(input);
+      if (formatted !== input) {
+        console.log('English formatted:', formatted);
+        return formatted;
+      }
+      formatted = autoFormatSpanishWatchtower(input);
+      if (formatted !== input) {
+        console.log('Spanish formatted:', formatted);
+        return formatted;
+      }
+      console.log('No formatting applied');
+      return input;
+    };
   }
 
   onunload() { }
@@ -858,6 +981,22 @@ class JWLLinkerPlugin extends Plugin {
     let { selection, caret, line } = this._getEditorSelection(activeEditor);
     if (selection) {
       selection = selection.trim();
+
+      // Auto-format Watchtower publications with month names
+      const originalSelection = selection;
+      selection = autoFormatRussianWatchtower(selection);
+      selection = autoFormatEnglishWatchtower(selection);
+      selection = autoFormatSpanishWatchtower(selection);
+
+      if (selection !== originalSelection) {
+        console.log('Auto-formatted Watchtower publication:', originalSelection, '→', selection);
+        // Update the editor with the formatted text
+        activeEditor.replaceSelection(selection);
+        // Update the selection for further processing
+        const newSelection = this._getEditorSelection(activeEditor);
+        selection = newSelection.selection.trim();
+      }
+
       loadingNotice = new Notice(`${Lang.loadingCitation} ${selection}`); // remain open until we complete
       const view = await this.getView();
       switch (command) {
