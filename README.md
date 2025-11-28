@@ -1,6 +1,6 @@
 # JWL Linker EN-RU-ES Plugin for [Obsidian](https://obsidian.md)
 
-**Comprehensive multilingual JW Library linker** supporting Bible references and JW publications in **English, Russian, and Spanish**. 
+**Comprehensive multilingual JW Library linker** supporting Bible references and JW publications in **English, Russian, and Spanish**. Features: auto-formatting (od 15 par. 3 → od chap. 15 par. 3).
 
 This is a fork of Original plugin by [MrBertie](https://github.com/MrBertie/jwl-linker)
 
